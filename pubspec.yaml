@@ -1,0 +1,37 @@
+name: beat_app
+description: A cross-platform screenwriting application using the Fountain format.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  super_editor: ^0.3.0-dev.47
+  file_picker: ^8.0.0
+  path_provider: ^2.1.0
+  path: ^1.9.0
+  uuid: ^4.0.0
+  collection: ^1.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  fonts:
+    - family: Courier Prime
+      fonts:
+        - asset: assets/fonts/CourierPrime-Regular.ttf
+        - asset: assets/fonts/CourierPrime-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/CourierPrime-Italic.ttf
+          style: italic
+        - asset: assets/fonts/CourierPrime-BoldItalic.ttf
+          weight: 700
+          style: italic
