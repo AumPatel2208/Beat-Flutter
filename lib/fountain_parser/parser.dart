@@ -259,7 +259,8 @@ class ContinuousFountainParser {
 
     // Get previous and next non-empty lines for context
     final prevLine = _previousNonEmptyLine(index);
-    final nextLine = _nextNonEmptyLine(index);
+    // nextLine is used for dialogue/parenthetical detection below
+    final _ = _nextNonEmptyLine(index);
 
     // Section (starts with #)
     if (trimmed.startsWith('#')) {

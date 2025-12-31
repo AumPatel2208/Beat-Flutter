@@ -180,6 +180,22 @@ class DocumentSettings {
     return '\n$settingsBlockStart\n$json\n$settingsBlockEnd';
   }
 
+  /// Alias for toSettingsString for compatibility
+  String generateSettingsString() => toSettingsString();
+
+  /// Extract settings from content and return both settings and clean content
+  static SettingsExtractionResult extractFromContent(String content) {
+    final result = parseFromString(content);
+    final cleanContent = content.substring(
+      result.contentRange.start,
+      result.contentRange.end,
+    ).trimRight();
+    return SettingsExtractionResult(
+      settings: result.settings,
+      content: cleanContent,
+    );
+  }
+
   /// Get all settings as a map
   Map<String, dynamic> toMap() => Map.from(_settings);
 
@@ -206,4 +222,15 @@ class ContentRange {
   const ContentRange(this.start, this.end);
 
   int get length => end - start;
+}
+
+/// Result of extracting settings from content
+class SettingsExtractionResult {
+  final DocumentSettings settings;
+  final String content;
+
+  const SettingsExtractionResult({
+    required this.settings,
+    required this.content,
+  });
 }

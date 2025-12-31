@@ -48,6 +48,9 @@ class Line {
   /// Color associated with this line (for scene coloring)
   String? color;
 
+  /// Section depth (for section headers, 1 = #, 2 = ##, etc.)
+  int? sectionDepth;
+
   /// Whether this line has changed since last parse
   bool changed = false;
 
@@ -66,6 +69,7 @@ class Line {
     this.originalString,
     this.sceneNumber,
     this.color,
+    this.sectionDepth,
   })  : uuid = uuid ?? const Uuid().v4(),
         boldRanges = boldRanges ?? [],
         italicRanges = italicRanges ?? [],
@@ -74,6 +78,9 @@ class Line {
         omitRanges = omitRanges ?? [],
         strikeoutRanges = strikeoutRanges ?? [],
         escapeRanges = escapeRanges ?? [];
+
+  /// Alias for omitRanges for compatibility
+  List<Range> get omittedRanges => omitRanges;
 
   /// Create a copy of this line
   Line copy() {
@@ -92,6 +99,7 @@ class Line {
       originalString: originalString,
       sceneNumber: sceneNumber,
       color: color,
+      sectionDepth: sectionDepth,
     );
   }
 
