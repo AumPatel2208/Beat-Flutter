@@ -1,5 +1,7 @@
 # Beat Flutter
 
+## Don't use this use [Obsidian MD](https://obsidian.md/) with [Fountain Plugin](https://github.com/chuangcaleb/obsidian-fountain-editor?tab=readme-ov-file) instead
+
 This is a vibe-coded work in-progress, the original Beat application is brilliant and I always miss it when I'm away from my Mac. There isn't a decent `.fountain` editor on Windows or Linux and this is an effort to do that.
 
 This mostly doesn't work in it's current state.
