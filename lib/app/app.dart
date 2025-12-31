@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -394,7 +395,7 @@ class _MenuButtonState extends State<_MenuButton> {
                 elevation: 8,
                 borderRadius: BorderRadius.circular(4),
                 child: Container(
-                  constraints: const BoxConstraints(minWidth: 200),
+                  constraints: const BoxConstraints(minWidth: 200, maxWidth: 300),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(4),
@@ -405,10 +406,15 @@ class _MenuButtonState extends State<_MenuButton> {
                     children: widget.items.map((item) {
                       if (item is _MenuItem) {
                         return InkWell(
-                          onTap: () {
-                            _hideMenu();
-                            item.onTap?.call();
-                          },
+                          onTap: item.enabled
+                              ? () {
+                                  final callback = item.onTap;
+                                  _hideMenu();
+                                  if (callback != null) {
+                                    Future.microtask(callback);
+                                  }
+                                }
+                              : null,
                           child: item,
                         );
                       }

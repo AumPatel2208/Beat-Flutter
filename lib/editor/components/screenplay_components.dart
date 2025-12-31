@@ -29,11 +29,14 @@ class ScreenplayComponentBuilder implements ComponentBuilder {
       );
     }
 
-    // Action
+    // Action (and Page Breaks which are ActionNode with === text)
     if (node is ActionNode) {
+      // Check if this is a page break (=== text)
+      final text = node.text.toPlainText().trim();
+      final blockType = text == '===' ? 'pageBreak' : 'action';
       return _createTextViewModel(
         node: node,
-        blockType: 'action',
+        blockType: blockType,
       );
     }
 
@@ -117,11 +120,6 @@ class ScreenplayComponentBuilder implements ComponentBuilder {
       );
     }
 
-    // Page Break
-    if (node is PageBreakNode) {
-      return PageBreakComponentViewModel(nodeId: node.id);
-    }
-
     return null;
   }
 
@@ -177,13 +175,6 @@ class ScreenplayComponentBuilder implements ComponentBuilder {
     SingleColumnDocumentComponentContext componentContext,
     SingleColumnLayoutComponentViewModel componentViewModel,
   ) {
-    if (componentViewModel is PageBreakComponentViewModel) {
-      return PageBreakComponent(
-        key: componentContext.componentKey,
-        nodeId: componentViewModel.nodeId,
-      );
-    }
-
     // For text-based nodes, defer to the default paragraph component
     if (componentViewModel is ParagraphComponentViewModel) {
       return TextComponent(
@@ -203,80 +194,10 @@ class ScreenplayComponentBuilder implements ComponentBuilder {
 }
 
 // ============================================================================
-// Page Break Component
+// Page Break Rendering
 // ============================================================================
-
-/// View model for page break component
-class PageBreakComponentViewModel extends SingleColumnLayoutComponentViewModel {
-  PageBreakComponentViewModel({
-    required String nodeId,
-    EdgeInsets padding = const EdgeInsets.symmetric(vertical: 16),
-    double? maxWidth,
-  }) : super(nodeId: nodeId, padding: padding, maxWidth: maxWidth, createdAt: null);
-
-  @override
-  PageBreakComponentViewModel copy() {
-    return PageBreakComponentViewModel(
-      nodeId: nodeId,
-      padding: padding is EdgeInsets ? padding as EdgeInsets : const EdgeInsets.symmetric(vertical: 16),
-      maxWidth: maxWidth,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      super == other &&
-          other is PageBreakComponentViewModel &&
-          nodeId == other.nodeId;
-
-  @override
-  int get hashCode => super.hashCode ^ nodeId.hashCode;
-}
-
-/// Widget that renders a page break as a horizontal line
-class PageBreakComponent extends StatelessWidget {
-  const PageBreakComponent({
-    super.key,
-    required this.nodeId,
-  });
-
-  final String nodeId;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 1,
-              color: Colors.grey.shade400,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'PAGE BREAK',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.grey.shade500,
-                letterSpacing: 1,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              height: 1,
-              color: Colors.grey.shade400,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// Page breaks are ActionNode with "===" text, styled via stylesheet.
+// Visual separator rendered through text decoration.
 
 // ============================================================================
 // Scene Number Component (for scene heading decoration)

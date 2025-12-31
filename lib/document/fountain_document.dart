@@ -271,7 +271,11 @@ FADE IN:
         );
         
       case LineType.pageBreak:
-        return PageBreakNode(id: id);
+        // Page breaks are ActionNode with === text (editable)
+        return ActionNode(
+          id: id,
+          text: AttributedText('==='),
+        );
         
       case LineType.titlePageTitle:
       case LineType.titlePageAuthor:
@@ -420,8 +424,6 @@ FADE IN:
         // Action, Dialogue, Parenthetical - output as-is
         return text;
       }
-    } else if (node is PageBreakNode) {
-      return '===';
     }
     
     return '';

@@ -23,6 +23,7 @@ class _EditorScreenState extends State<EditorScreen> {
   late MutableDocumentComposer _composer;
   late Editor _editor;
   late FocusNode _editorFocusNode;
+  final GlobalKey _documentLayoutKey = GlobalKey();
 
   @override
   void initState() {
@@ -34,7 +35,13 @@ class _EditorScreenState extends State<EditorScreen> {
   void didUpdateWidget(EditorScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.fountainDocument != oldWidget.fountainDocument) {
+      // Clean up old resources
+      _composer.dispose();
+      _editorFocusNode.dispose();
+      // Initialize with new document
       _initializeEditor();
+      // Rebuild to reflect changes
+      setState(() {});
     }
   }
 
@@ -46,6 +53,23 @@ class _EditorScreenState extends State<EditorScreen> {
       document: widget.fountainDocument.document,
       composer: _composer,
     );
+    
+    // Set initial selection to the beginning of the first node
+    final firstNodeId = widget.fountainDocument.document.getNodeAt(0)?.id;
+    if (firstNodeId != null) {
+      final firstNode = widget.fountainDocument.document.getNodeById(firstNodeId);
+      if (firstNode != null) {
+        _composer.setSelectionWithReason(
+          DocumentSelection.collapsed(
+            position: DocumentPosition(
+              nodeId: firstNode.id,
+              nodePosition: firstNode.beginningPosition,
+            ),
+          ),
+          SelectionReason.userInteraction,
+        );
+      }
+    }
     
     // Listen for document changes
     _editor.addListener(FunctionalEditListener(_onDocumentEdit));
@@ -59,6 +83,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   void dispose() {
+    _composer.dispose();
     _editorFocusNode.dispose();
     super.dispose();
   }
@@ -75,7 +100,7 @@ class _EditorScreenState extends State<EditorScreen> {
         gestureMode: DocumentGestureMode.mouse,
         inputSource: TextInputSource.ime,
         autofocus: true,
-        documentLayoutKey: GlobalKey(),
+        documentLayoutKey: _documentLayoutKey,
       ),
     );
   }

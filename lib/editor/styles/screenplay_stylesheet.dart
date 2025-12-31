@@ -190,10 +190,18 @@ class ScreenplayStylesheet {
           },
         ),
 
-        // Page Break
+        // Page Break (displayed as centered === with visual styling)
         StyleRule(
           const BlockSelector('pageBreak'),
           (doc, node) => {
+            'textStyle': TextStyle(
+              fontFamily: screenplayFontFamily,
+              fontSize: screenplayFontSize,
+              height: lineHeight,
+              color: Colors.grey.shade500,
+              letterSpacing: 4,
+            ),
+            'textAlign': TextAlign.center,
             'padding': const CascadingPadding.symmetric(vertical: 12),
           },
         ),

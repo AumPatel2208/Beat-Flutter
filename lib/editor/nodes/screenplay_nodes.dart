@@ -539,82 +539,10 @@ class SynopsisNode extends TextNode {
 }
 
 // ============================================================================
-// Page Break Node
+// Page Break
 // ============================================================================
-
-/// Page break (===)
-@immutable
-class PageBreakNode extends DocumentNode {
-  PageBreakNode({required this.id, Map<String, dynamic>? metadata})
-      : _metadata = metadata ?? {};
-
-  @override
-  final String id;
-
-  final Map<String, dynamic> _metadata;
-
-  @override
-  Map<String, dynamic> get metadata => _metadata;
-
-  @override
-  NodePosition get beginningPosition => const UpstreamDownstreamNodePosition.upstream();
-
-  @override
-  NodePosition get endPosition => const UpstreamDownstreamNodePosition.downstream();
-
-  @override
-  NodePosition selectUpstreamPosition(NodePosition position1, NodePosition position2) {
-    return const UpstreamDownstreamNodePosition.upstream();
-  }
-
-  @override
-  NodePosition selectDownstreamPosition(NodePosition position1, NodePosition position2) {
-    return const UpstreamDownstreamNodePosition.downstream();
-  }
-
-  @override
-  UpstreamDownstreamNodeSelection computeSelection({
-    required NodePosition base,
-    required NodePosition extent,
-  }) {
-    return const UpstreamDownstreamNodeSelection.all();
-  }
-
-  @override
-  bool containsPosition(Object position) {
-    return position is UpstreamDownstreamNodePosition;
-  }
-
-  @override
-  String copyContent(NodeSelection selection) {
-    return '===';
-  }
-
-  @override
-  bool hasEquivalentContent(DocumentNode other) {
-    return other is PageBreakNode;
-  }
-
-  @override
-  DocumentNode copyAndReplaceMetadata(Map<String, dynamic> newMetadata) {
-    return PageBreakNode(id: id, metadata: newMetadata);
-  }
-
-  @override
-  DocumentNode copyWithAddedMetadata(Map<String, dynamic> newProperties) {
-    return PageBreakNode(
-      id: id,
-      metadata: {..._metadata, ...newProperties},
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is PageBreakNode && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-}
+// Page breaks are represented as ActionNode with text content "==="
+// They are parsed and styled specially but remain editable text.
 
 // ============================================================================
 // Title Page Node
@@ -705,7 +633,6 @@ extension ScreenplayNodeBlockType on DocumentNode {
     if (this is ShotNode) return 'shot';
     if (this is SectionNode) return 'section';
     if (this is SynopsisNode) return 'synopsis';
-    if (this is PageBreakNode) return 'pageBreak';
     if (this is TitlePageNode) return 'titlePage';
     return 'action'; // default
   }
